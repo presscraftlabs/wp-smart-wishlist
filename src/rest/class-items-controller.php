@@ -7,9 +7,9 @@
 
 namespace WishCraft\Rest;
 
-use WishCraft\Access;
 use WishCraft\Data\Items;
 use WishCraft\Visitor;
+use WishCraft\Wishlists;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
@@ -249,38 +249,8 @@ final class Items_Controller extends Controller {
 	 * @return \WP_REST_Response|WP_Error
 	 */
 	public function toggle( WP_REST_Request $request ) {
-		$object    = (int) $request['object_id'];
-		$variation = (int) $request['variation_id'];
-		if ( $request['list_id'] ) {
-			$wishlist = $this->list_or_error( $request['list_id'], 'can_edit' );
-			if ( is_wp_error( $wishlist ) ) {
-				return $wishlist;
-			}
-		} else {
-			$wishlist = $this->default_list( false );
-		}
-		$existing = $wishlist ? Items::find( $wishlist['id'], $object, $variation ) : null;
-		if ( $existing ) {
-			Items::remove( $existing['id'] );
-		} else {
-			if ( ! Items::allowed( $object, $variation ) ) {
-				return $this->not_allowed();
-			}
-			$wishlist = $wishlist ? $wishlist : $this->default_list( true );
-			if ( ! Items::add( $wishlist['id'], $object, $variation, 1, '', Visitor::user_id() ) ) {
-				return $this->full();
-			}
-		}
-		$lists = $this->status_for( array( $object ) );
-		return rest_ensure_response(
-			array(
-				'added'     => ! $existing,
-				'list_id'   => $wishlist['id'],
-				'object_id' => $object,
-				'lists'     => isset( $lists[ $object ] ) ? $lists[ $object ] : array(),
-				'count'     => $this->total(),
-			)
-		);
+		$result = Wishlists::toggle( $request['object_id'], $request['variation_id'], $request['list_id'] );
+		return is_wp_error( $result ) ? $result : rest_ensure_response( $result );
 	}
 
 	/**
@@ -293,8 +263,8 @@ final class Items_Controller extends Controller {
 		$ids = array_map( 'intval', (array) $request['ids'] );
 		return rest_ensure_response(
 			array(
-				'items' => (object) $this->status_for( $ids ),
-				'count' => $this->total(),
+				'items' => (object) Wishlists::status( $ids ),
+				'count' => Wishlists::total(),
 				'lists' => array_map(
 					static function ( $wishlist ) {
 						return array(
@@ -303,34 +273,9 @@ final class Items_Controller extends Controller {
 							'is_default' => $wishlist['is_default'],
 						);
 					},
-					array_values( array_filter( $this->visitor_lists(), array( Access::class, 'can_edit' ) ) )
+					Wishlists::editable()
 				),
 			)
 		);
-	}
-
-	/**
-	 * Object ID => list IDs for the visitor's lists.
-	 *
-	 * @param int[] $ids Post IDs.
-	 * @return array
-	 */
-	private function status_for( array $ids ) {
-		return Items::membership( wp_list_pluck( $this->visitor_lists(), 'id' ), $ids );
-	}
-
-	/**
-	 * Number of items in the lists the visitor owns.
-	 *
-	 * @return int
-	 */
-	private function total() {
-		$total = 0;
-		foreach ( $this->visitor_lists() as $wishlist ) {
-			if ( Access::owns( $wishlist ) ) {
-				$total += Items::count( $wishlist['id'] );
-			}
-		}
-		return $total;
 	}
 }

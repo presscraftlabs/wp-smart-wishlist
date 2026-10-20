@@ -1,0 +1,18 @@
+{
+  "name": "wp-smart-wishlist",
+  "version": "3.0.0-dev",
+  "private": true,
+  "description": "WishCraft – multiple and shareable wishlists (front-end and block editor scripts).",
+  "license": "GPL-2.0-or-later",
+  "scripts": {
+    "build": "wp-scripts build frontend=./assets/src/frontend/index.js blocks=./assets/src/blocks/index.js --output-path=build",
+    "start": "wp-scripts start frontend=./assets/src/frontend/index.js blocks=./assets/src/blocks/index.js --output-path=build",
+    "lint:js": "wp-scripts lint-js assets/src",
+    "lint:css": "wp-scripts lint-style 'assets/src/**/*.scss'",
+    "test:unit": "wp-scripts test-unit-js --passWithNoTests assets/src"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "27.9.0",
+    "typescript": "~5.5.4"
+  }
+}

@@ -11,6 +11,7 @@ use WishCraft\Access;
 use WishCraft\Data\Lists;
 use WishCraft\Settings;
 use WishCraft\Visitor;
+use WishCraft\Wishlists;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
@@ -114,7 +115,7 @@ final class Lists_Controller extends Controller {
 		if ( ! Settings::get( 'multiple' ) ) {
 			return new WP_Error( 'wishcraft_single_list', __( 'This site has one wishlist per visitor.', 'wp-smart-wishlist' ), array( 'status' => 403 ) );
 		}
-		$owned = array_filter( $this->visitor_lists(), array( Access::class, 'owns' ) );
+		$owned = Wishlists::owned();
 		if ( count( $owned ) >= Settings::get( 'max_lists' ) ) {
 			return new WP_Error( 'wishcraft_too_many_lists', __( 'You have reached the most wishlists you can keep.', 'wp-smart-wishlist' ), array( 'status' => 403 ) );
 		}

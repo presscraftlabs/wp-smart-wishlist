@@ -37,12 +37,21 @@ final class Plugin {
 
 		Visitor::register();
 		Migrator::register();
+		Front\Assets::register();
+		Front\Blocks::register();
+		Front\Button::register();
+		Front\Handler::register();
+		Woo\WooCommerce::register();
+		Legacy\Widget::register();
 
 		add_action( 'init', array( Schema::class, 'maybe_install' ), 5 );
 		add_action( 'admin_init', array( Migrator::class, 'maybe_start' ) );
 		add_action( 'rest_api_init', array( self::class, 'rest' ) );
 		add_action( self::CLEANUP_HOOK, array( self::class, 'cleanup' ) );
 		add_action( 'deleted_user', array( self::class, 'delete_user' ), 10, 2 );
+		add_action( 'wishcraft_item_added', array( Wishlists::class, 'reset' ), 10, 0 );
+		add_action( 'wishcraft_item_removed', array( Wishlists::class, 'reset' ), 10, 0 );
+		add_filter( 'display_post_states', array( self::class, 'post_state' ), 10, 2 );
 	}
 
 	/**
@@ -51,6 +60,7 @@ final class Plugin {
 	public static function rest() {
 		( new Rest\Lists_Controller() )->register_routes();
 		( new Rest\Items_Controller() )->register_routes();
+		( new Rest\View_Controller() )->register_routes();
 	}
 
 	/**
@@ -66,6 +76,47 @@ final class Plugin {
 			wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', self::CLEANUP_HOOK );
 		}
 		Migrator::maybe_start();
+		self::create_page();
+	}
+
+	/**
+	 * Create the wishlist page once, unless one is set and still exists.
+	 *
+	 * @return int Page ID.
+	 */
+	public static function create_page() {
+		$page = (int) Settings::get( 'page' );
+		if ( $page && 'page' === get_post_type( $page ) && 'trash' !== get_post_status( $page ) ) {
+			return $page;
+		}
+		$page = wp_insert_post(
+			array(
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => __( 'Wishlist', 'wp-smart-wishlist' ),
+				'post_name'    => 'wishlist',
+				'post_content' => '<!-- wp:wishcraft/wishlist /-->',
+			)
+		);
+		if ( $page && ! is_wp_error( $page ) ) {
+			Settings::save( array( 'page' => $page ) );
+			return (int) $page;
+		}
+		return 0;
+	}
+
+	/**
+	 * "Wishlist page" label in the pages list.
+	 *
+	 * @param string[] $states States.
+	 * @param \WP_Post $post   Post.
+	 * @return string[]
+	 */
+	public static function post_state( $states, $post ) {
+		if ( (int) Settings::get( 'page' ) === $post->ID ) {
+			$states['wishcraft'] = __( 'Wishlist page', 'wp-smart-wishlist' );
+		}
+		return $states;
 	}
 
 	/**

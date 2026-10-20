@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wishcraft/wishlist",
+	"title": "Wishlist",
+	"category": "widgets",
+	"icon": "heart",
+	"description": "The visitor's wishlists, and lists opened through a share link.",
+	"keywords": [ "wishlist", "favorites", "gift list" ],
+	"textdomain": "wp-smart-wishlist",
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"align": [ "wide", "full" ]
+	},
+	"editorScript": "wishcraft-blocks",
+	"editorStyle": "wishcraft"
+}

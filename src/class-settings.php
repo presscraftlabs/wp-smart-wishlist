@@ -45,6 +45,8 @@ final class Settings {
 			'button_added'     => '',
 			'product_position' => 'after_cart',
 			'loop_position'    => 'after_cart',
+			// Other post types: the button before or after the content of single posts.
+			'content_position' => 'after',
 			'remove_on_cart'   => false,
 		);
 	}
@@ -122,6 +124,9 @@ final class Settings {
 				case 'product_position':
 				case 'loop_position':
 					$value = in_array( $value, array( 'after_cart', 'before_cart', 'after_summary', 'none' ), true ) ? $value : $default;
+					break;
+				case 'content_position':
+					$value = in_array( $value, array( 'before', 'after', 'none' ), true ) ? $value : $default;
 					break;
 				case 'guest_days':
 					$value = max( 1, min( 365, (int) $value ) );

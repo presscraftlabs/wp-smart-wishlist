@@ -10,12 +10,25 @@ Requires PHP 7.4+ and WordPress 6.5+.
 
 ```
 composer install
+npm ci && npm run build
 composer lint                      # PHPCS (WordPress Coding Standards)
 bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 latest
 WP_TESTS_DIR=/tmp/wordpress-tests-lib vendor/bin/phpunit
 ```
 
-`vendor/` is not committed. Releases are deployed to WordPress.org by GitHub Actions; see [`RELEASING.md`](RELEASING.md).
+`vendor/` and `build/` are not committed. Releases are deployed to WordPress.org by GitHub Actions; see [`RELEASING.md`](RELEASING.md).
+
+## Blocks and shortcodes
+
+| Block | Shortcode | |
+|---|---|---|
+| Wishlist (`wishcraft/wishlist`) | `[wishcraft]` | The visitor's lists, and lists opened through a share link (`?wishlist=token`) |
+| Wishlist Button (`wishcraft/button`) | `[wishcraft_button id="" label="yes"]` | Heart button for the current or given post |
+| Wishlist Counter (`wishcraft/counter`) | `[wishcraft_count label="no"]` | Number of saved items, linking to the wishlist page |
+
+WooCommerce products get the button automatically on product pages and product cards (classic templates and WooCommerce blocks); other post types after the content. The 2.0 "Smart Wish List" widget keeps working.
+
+Theme colours can be changed with the `--wishcraft-accent`, `--wishcraft-border`, `--wishcraft-muted`, `--wishcraft-surface` and `--wishcraft-radius` custom properties.
 
 ## REST API (`wishcraft/v1`)
 
@@ -30,6 +43,7 @@ WP_TESTS_DIR=/tmp/wordpress-tests-lib vendor/bin/phpunit
 | `/toggle` | POST | Add to or remove from a list (the default list without `list_id`) |
 | `/status?ids[]=` | GET | Which of the given posts are saved, the item count and the lists |
 | `/shared/{token}` | GET | A list seen through its share link |
+| `/view` | GET | Wishlist page markup (`list`, `token`, `url`), used by the script after each change |
 
 Logged-in users authenticate with the usual REST nonce. Guests are recognised by an HttpOnly cookie, and their writes must send the `X-WishCraft: 1` header.
 

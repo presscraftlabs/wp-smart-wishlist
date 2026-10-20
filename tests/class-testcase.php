@@ -19,6 +19,7 @@ abstract class WishCraft_TestCase extends WP_UnitTestCase {
 		Settings::flush();
 		unset( $_COOKIE[ Visitor::COOKIE ] );
 		Visitor::reset();
+		WishCraft\Wishlists::reset();
 	}
 
 	public function tear_down() {

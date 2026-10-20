@@ -1,0 +1,26 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wishcraft/counter",
+	"title": "Wishlist Counter",
+	"category": "widgets",
+	"icon": "heart",
+	"description": "A heart with the number of saved items, linking to the wishlist page. For headers.",
+	"keywords": [ "wishlist", "header", "count" ],
+	"textdomain": "wp-smart-wishlist",
+	"attributes": {
+		"showLabel": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"editorScript": "wishcraft-blocks",
+	"editorStyle": "wishcraft"
+}

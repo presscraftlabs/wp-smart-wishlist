@@ -10,9 +10,9 @@ namespace WishCraft\Rest;
 use WishCraft\Access;
 use WishCraft\Data\Items;
 use WishCraft\Data\Lists;
-use WishCraft\Data\Members;
 use WishCraft\Settings;
 use WishCraft\Visitor;
+use WishCraft\Wishlists;
 use WP_Error;
 use WP_REST_Request;
 
@@ -85,38 +85,7 @@ abstract class Controller {
 	 * @return array[]
 	 */
 	protected function visitor_lists() {
-		$user = Visitor::user_id();
-		if ( ! $user ) {
-			return Lists::for_guest( Visitor::guest_key() );
-		}
-		$lists = Lists::for_user( $user );
-		if ( Settings::get( 'collaboration' ) ) {
-			foreach ( Members::list_ids_for_user( $user ) as $id ) {
-				$wishlist = Lists::get( $id );
-				if ( $wishlist ) {
-					$lists[] = $wishlist;
-				}
-			}
-		}
-		return $lists;
-	}
-
-	/**
-	 * The visitor's default list, created when asked.
-	 *
-	 * @param bool $create Create it.
-	 * @return array|null
-	 */
-	protected function default_list( $create ) {
-		foreach ( $this->visitor_lists() as $wishlist ) {
-			if ( $wishlist['is_default'] && Access::owns( $wishlist ) ) {
-				return $wishlist;
-			}
-		}
-		if ( ! $create ) {
-			return null;
-		}
-		return Lists::get( Lists::create( Visitor::owner_fields() + array( 'is_default' => 1 ) ) );
+		return Wishlists::visitor_lists();
 	}
 
 	/**
