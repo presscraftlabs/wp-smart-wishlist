@@ -1,5 +1,5 @@
 === WP Smart Wishlist ===
-Contributors: rajanit2000,a2ztechnologies
+Contributors: rajanit2000
 Tags: wishlist, wp-ecommerce, wp-ecommerce wishlist, saved products, products, ecommerce, ecommerce wishlist
 Requires at least: 3.0
 Tested up to: 4.1
