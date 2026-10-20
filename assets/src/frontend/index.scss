@@ -1,0 +1,570 @@
+/**
+ * WishCraft front end. Neutral styles that follow the theme: colours come from currentColor and
+ * a few custom properties themes can override.
+ */
+
+:root {
+	--wishcraft-accent: #c2185b;
+	--wishcraft-border: rgba(0, 0, 0, 0.12);
+	--wishcraft-muted: rgba(0, 0, 0, 0.6);
+	--wishcraft-surface: #fff;
+	--wishcraft-radius: 6px;
+}
+
+.wishcraft-icon {
+	fill: currentcolor;
+	flex: none;
+}
+
+/* Button */
+
+.wishcraft-button-wrap {
+	margin: 0.75em 0;
+	position: relative;
+}
+
+.wishcraft-button-wrap--loop {
+	margin: 0.5em 0 0;
+}
+
+.wishcraft-button-wrap.has-text-align-center {
+	text-align: center;
+}
+
+.wishcraft-button-wrap.has-text-align-right {
+	text-align: right;
+}
+
+.wishcraft-button {
+	align-items: center;
+	color: inherit;
+	cursor: pointer;
+	display: inline-flex;
+	gap: 0.4em;
+	text-decoration: none;
+
+	.wishcraft-icon {
+		fill: none;
+		stroke: currentcolor;
+		stroke-width: 2;
+		transition: transform 0.15s ease;
+	}
+
+	&:hover .wishcraft-icon,
+	&:focus-visible .wishcraft-icon {
+		transform: scale(1.12);
+	}
+
+	&.is-saved .wishcraft-icon {
+		fill: var(--wishcraft-accent);
+		stroke: var(--wishcraft-accent);
+	}
+
+	&[aria-busy="true"] {
+		opacity: 0.6;
+		pointer-events: none;
+	}
+}
+
+.wishcraft-button--icon {
+	border-radius: 50%;
+	justify-content: center;
+	min-height: 2.25em;
+	min-width: 2.25em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.wishcraft-button .wishcraft-icon {
+		transition: none;
+	}
+}
+
+/* List picker */
+
+.wishcraft-picker {
+	background: var(--wishcraft-surface);
+	border: 1px solid var(--wishcraft-border);
+	border-radius: var(--wishcraft-radius);
+	box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+	color: #1e1e1e;
+	display: grid;
+	gap: 0.5em;
+	left: 0;
+	max-width: calc(100vw - 32px);
+	min-width: 220px;
+	padding: 0.75em;
+	position: absolute;
+	top: 100%;
+	z-index: 1000;
+
+	label {
+		align-items: center;
+		display: flex;
+		gap: 0.4em;
+	}
+}
+
+.wishcraft-picker__title {
+	font-weight: 600;
+	margin: 0;
+}
+
+.wishcraft-picker__new {
+	border-top: 1px solid var(--wishcraft-border);
+	display: flex;
+	gap: 0.4em;
+	padding-top: 0.5em;
+
+	input {
+		flex: 1;
+		min-width: 0;
+	}
+}
+
+/* Shared controls */
+
+/* Link-style buttons; themes style buttons strongly, so the reset wins. */
+.wishcraft-link {
+	background: none !important;
+	border: 0 !important;
+	box-shadow: none !important;
+	color: inherit !important;
+	cursor: pointer;
+	font: inherit;
+	min-height: 0 !important;
+	padding: 0 !important;
+	text-decoration: underline;
+	width: auto !important;
+}
+
+.wishcraft-link--danger {
+	color: #b32d2e !important;
+}
+
+.wishcraft-primary,
+.wishcraft-secondary {
+	border: 1px solid currentcolor;
+	border-radius: var(--wishcraft-radius);
+	cursor: pointer;
+	display: inline-block;
+	font: inherit;
+	line-height: 1.2;
+	padding: 0.5em 1em;
+	text-align: center;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.wishcraft-primary {
+	background: #1e1e1e;
+	border-color: #1e1e1e;
+	color: #fff;
+
+	&:hover,
+	&:focus {
+		color: #fff;
+		opacity: 0.85;
+	}
+}
+
+.wishcraft-secondary {
+	background: transparent;
+	color: inherit;
+}
+
+/* Counter */
+
+.wishcraft-counter {
+	align-items: center;
+	color: inherit;
+	display: inline-flex;
+	gap: 0.3em;
+	position: relative;
+	text-decoration: none;
+}
+
+.wishcraft-counter__count {
+	background: var(--wishcraft-accent);
+	border-radius: 999px;
+	color: #fff;
+	font-size: 0.7em;
+	line-height: 1;
+	min-width: 1.6em;
+	padding: 0.25em 0.45em;
+	text-align: center;
+
+	&[data-count="0"] {
+		display: none;
+	}
+}
+
+/* Wishlist page */
+
+.wishcraft-page {
+	display: grid;
+	gap: 1.5em;
+}
+
+.wishcraft-tabs {
+	align-items: center;
+	border-bottom: 1px solid var(--wishcraft-border);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5em 1.5em;
+	padding-bottom: 0.5em;
+
+	ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25em 1em;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+}
+
+.wishcraft-tab {
+	color: inherit;
+	text-decoration: none;
+
+	&.is-current {
+		font-weight: 600;
+		text-decoration: underline;
+		text-underline-offset: 0.3em;
+	}
+}
+
+.wishcraft-tab__count,
+.wishcraft-tab__shared {
+	color: var(--wishcraft-muted);
+	font-size: 0.85em;
+}
+
+.wishcraft-new-list {
+	align-items: center;
+	display: inline-flex;
+	gap: 0.2em;
+	text-decoration: none;
+}
+
+.wishcraft-list {
+	display: grid;
+	gap: 1em;
+}
+
+.wishcraft-list__header {
+	align-items: flex-start;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1em;
+	justify-content: space-between;
+
+	p {
+		margin: 0.25em 0 0;
+	}
+}
+
+.wishcraft-list__title {
+	margin: 0;
+}
+
+.wishcraft-list__owner {
+	color: var(--wishcraft-muted);
+}
+
+.wishcraft-list__actions {
+	display: flex;
+	gap: 1em;
+}
+
+.wishcraft-list__footer {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.wishcraft-items {
+	display: grid;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.wishcraft-item {
+	align-items: start;
+	border-bottom: 1px solid var(--wishcraft-border);
+	display: grid;
+	gap: 0.75em 1em;
+	grid-template-columns: 80px minmax(0, 1fr);
+	padding: 1em 0;
+
+	&[aria-busy="true"] {
+		opacity: 0.5;
+	}
+}
+
+.wishcraft-item__image {
+	aspect-ratio: 1;
+	background: rgba(0, 0, 0, 0.04);
+	border-radius: var(--wishcraft-radius);
+	display: block;
+	overflow: hidden;
+
+	img {
+		display: block;
+		height: 100%;
+		object-fit: cover;
+		width: 100%;
+	}
+}
+
+.wishcraft-item__body {
+	display: grid;
+	gap: 0.25em;
+	min-width: 0;
+
+	> * {
+		min-width: 0;
+	}
+}
+
+.wishcraft-item__title {
+	color: inherit;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.wishcraft-item__variation,
+.wishcraft-item__stock,
+.wishcraft-item__note-text {
+	color: var(--wishcraft-muted);
+	font-size: 0.9em;
+	margin: 0;
+}
+
+.wishcraft-item__stock--outofstock {
+	color: #b32d2e;
+}
+
+.wishcraft-item__note input {
+	border: 1px solid transparent;
+	border-radius: 4px;
+	box-sizing: border-box;
+	font: inherit;
+	font-size: 0.9em;
+	margin-left: calc(-0.4em - 1px);
+	max-width: 24em;
+	min-width: 0;
+	padding: 0.2em 0.4em;
+	width: 100%;
+
+	&:hover,
+	&:focus {
+		border-color: var(--wishcraft-border);
+	}
+
+	&:disabled {
+		display: none;
+	}
+}
+
+.wishcraft-item__actions {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75em;
+	grid-column: 2;
+	justify-content: flex-start;
+
+	.wishcraft-button-wrap {
+		margin: 0;
+	}
+}
+
+.wishcraft-item__quantity {
+	align-items: center;
+	display: inline-flex;
+	gap: 0.3em;
+
+	input[type="number"] {
+		box-sizing: border-box;
+		font: inherit;
+		padding: 0.3em 0.4em;
+		width: 5em;
+	}
+}
+
+.wishcraft-item__move select {
+	font: inherit;
+	max-width: 10em;
+}
+
+.wishcraft-item__remove {
+	color: var(--wishcraft-muted);
+	display: inline-flex;
+	margin-left: auto;
+
+	&:hover,
+	&:focus {
+		color: #b32d2e;
+	}
+}
+
+@media (max-width: 600px) {
+
+	.wishcraft-item {
+		grid-template-columns: 64px minmax(0, 1fr);
+	}
+
+	.wishcraft-item__actions {
+		grid-column: 1 / -1;
+	}
+}
+
+.wishcraft-empty {
+	color: var(--wishcraft-muted);
+	padding: 2em 0;
+	text-align: center;
+
+	.wishcraft-icon {
+		height: 40px;
+		width: 40px;
+	}
+
+	p {
+		margin: 0.5em 0 0;
+	}
+}
+
+/* Share link */
+
+.wishcraft-share {
+	background: rgba(0, 0, 0, 0.03);
+	border-radius: var(--wishcraft-radius);
+	display: grid;
+	gap: 0.4em;
+	padding: 0.75em 1em;
+
+	label {
+		font-weight: 600;
+	}
+}
+
+.wishcraft-share__row {
+	display: flex;
+	gap: 0.5em;
+
+	input {
+		box-sizing: border-box;
+		flex: 1;
+		font: inherit;
+		min-width: 0;
+	}
+}
+
+.wishcraft-share__help {
+	color: var(--wishcraft-muted);
+	font-size: 0.9em;
+	margin: 0;
+}
+
+/* Dialog */
+
+.wishcraft-dialog {
+	border: 0;
+	border-radius: var(--wishcraft-radius);
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+	max-width: calc(100vw - 32px);
+	padding: 1.5em;
+	width: 420px;
+
+	&::backdrop {
+		background: rgba(0, 0, 0, 0.4);
+	}
+
+	form {
+		display: grid;
+		gap: 1em;
+	}
+
+	h2 {
+		margin: 0;
+	}
+
+	label {
+		display: grid;
+		gap: 0.3em;
+	}
+
+	input,
+	textarea,
+	select {
+		font: inherit;
+		width: 100%;
+	}
+}
+
+.wishcraft-dialog__error {
+	color: #b32d2e;
+	margin: 0;
+}
+
+.wishcraft-dialog__buttons {
+	align-items: center;
+	display: flex;
+	gap: 1em;
+	justify-content: flex-end;
+}
+
+/* Toast */
+
+.wishcraft-toast {
+	background: #1e1e1e;
+	border-radius: var(--wishcraft-radius);
+	bottom: 16px;
+	box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+	color: #fff;
+	left: 16px;
+	margin: 0 auto;
+	opacity: 0;
+	padding: 0.75em 1em;
+	pointer-events: none;
+	position: fixed;
+	right: 16px;
+	transform: translateY(1em);
+	visibility: hidden;
+	width: fit-content;
+	transition: opacity 0.2s ease, transform 0.2s ease;
+	z-index: 100000;
+
+	&.is-visible {
+		opacity: 1;
+		pointer-events: auto;
+		transform: none;
+		visibility: visible;
+	}
+
+	a {
+		color: inherit;
+		font-weight: 600;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.wishcraft-toast {
+		transition: none;
+	}
+}
+
+.wishcraft-notice {
+	border-left: 4px solid var(--wishcraft-accent);
+	margin: 0;
+	padding: 0.75em 1em;
+}
+
+/* Widget */
+
+.wishcraft-widget__items {
+	margin-bottom: 0.75em;
+}

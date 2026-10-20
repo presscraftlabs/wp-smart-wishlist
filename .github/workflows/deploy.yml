@@ -1,0 +1,72 @@
+name: Deploy to WordPress.org
+
+on:
+  push:
+    tags:
+      # Exact versions only; release candidates (e.g. 3.0.0-rc.1) never deploy to WordPress.org.
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Verify tag matches plugin version and Stable tag
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          MAIN=$(grep -l "Plugin Name:" ./*.php | head -n1)
+          HEADER=$(grep -m1 -E "^\s*\*?\s*Version:" "$MAIN" | sed -E 's/.*Version:\s*//' | tr -d '[:space:]')
+          STABLE=$(grep -m1 -i "^Stable tag:" readme.txt | sed -E 's/^Stable tag:\s*//I' | tr -d '[:space:]')
+          echo "tag=$TAG header=$HEADER stable=$STABLE ($MAIN)"
+          if [ "$TAG" != "$HEADER" ] || [ "$TAG" != "$STABLE" ]; then
+            echo "::error::Tag, plugin header Version and readme.txt Stable tag must all match."
+            exit 1
+          fi
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer
+          coverage: none
+
+      # vendor/ is not in Git; this creates the autoloader that ships.
+      - name: Install production dependencies
+        run: composer install --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+
+      # build/ is not in Git; the admin apps ship from here.
+      - name: Build scripts
+        run: npm ci && npm run build
+
+      - name: Check built scripts
+        run: for f in frontend.js frontend.css frontend.asset.php blocks.js blocks.asset.php; do test -s build/$f || { echo "::error::build/$f is missing"; exit 1; }; done
+
+      # The WordPress.org SVN hook rejects any file that fails php -l; fail here instead.
+      - name: Lint shipped PHP
+        run: find . -name '*.php' -not -path './node_modules/*' -not -path './tests/*' -not -path './bin/*' -print0 | xargs -0 -n1 -P4 php -d display_errors=stderr -l > /dev/null
+
+      - name: Smoke-test autoloader
+        run: php -r 'require "vendor/autoload.php"; if (!class_exists("WishCraft\\Plugin")) { fwrite(STDERR, "missing WishCraft\\Plugin\n"); exit(1); }'
+
+      - name: Deploy to WordPress.org SVN
+        id: deploy
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          generate-zip: true
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: wp-smart-wishlist
+
+      - name: Attach ZIP to GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.deploy.outputs.zip-path }}

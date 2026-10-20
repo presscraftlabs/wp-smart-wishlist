@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wishcraft/button",
+	"title": "Wishlist Button",
+	"category": "widgets",
+	"icon": "heart",
+	"description": "Add the current post or product to a wishlist.",
+	"keywords": [ "wishlist", "favorite", "save" ],
+	"textdomain": "wp-smart-wishlist",
+	"attributes": {
+		"showLabel": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "left", "center", "right" ],
+		"spacing": {
+			"margin": true
+		}
+	},
+	"usesContext": [ "postId", "postType" ],
+	"editorScript": "wishcraft-blocks",
+	"editorStyle": "wishcraft"
+}
