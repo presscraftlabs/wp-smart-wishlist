@@ -38,18 +38,15 @@ jobs:
         run: composer install --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader
 
       - uses: actions/setup-node@v5
-        if: hashFiles('package.json') != ''
         with:
           node-version: 20
           cache: npm
 
       # build/ is not in Git; the admin apps ship from here.
       - name: Build scripts
-        if: hashFiles('package.json') != ''
         run: npm ci && npm run build
 
       - name: Check built scripts
-        if: hashFiles('package.json') != ''
         run: for f in $(ls build/*.asset.php 2>/dev/null | sed -E "s#build/(.*)\.asset\.php#\1#"); do test -s build/$f.js && test -s build/$f.css && test -s build/$f.asset.php || { echo "::error::build/$f is missing"; exit 1; }; done
 
       # The WordPress.org SVN hook rejects any file that fails php -l; fail here instead.

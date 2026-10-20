@@ -24,12 +24,10 @@ jobs:
 
   js:
     runs-on: ubuntu-latest
-    if: hashFiles('package.json') != ''
     steps:
       - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v5
-        if: hashFiles('package.json') != ''
         with:
           node-version: 20
           cache: npm
@@ -61,14 +59,12 @@ jobs:
           coverage: none
 
       - uses: actions/setup-node@v5
-        if: hashFiles('package.json') != ''
         with:
           node-version: 20
           cache: npm
 
       # build/ is not in Git; the admin apps ship from here.
       - name: Build scripts
-        if: hashFiles('package.json') != ''
         run: npm ci && npm run build
 
       # Same production install deploy.yml runs before pushing to SVN.
@@ -79,7 +75,6 @@ jobs:
         run: find . -name '*.php' -not -path './node_modules/*' -not -path './tests/*' -not -path './bin/*' -print0 | xargs -0 -n1 -P4 php -d display_errors=stderr -l > /dev/null
 
       - name: Check built scripts
-        if: hashFiles('package.json') != ''
         run: for f in $(ls build/*.asset.php 2>/dev/null | sed -E "s#build/(.*)\.asset\.php#\1#"); do test -s build/$f.js && test -s build/$f.css && test -s build/$f.asset.php || { echo "::error::build/$f is missing"; exit 1; }; done
 
       - name: Smoke-test autoloader
