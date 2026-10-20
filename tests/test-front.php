@@ -88,6 +88,17 @@ class Test_Front extends WishCraft_TestCase {
 		$this->assertStringContainsString( 'data-list="' . $second . '"', $html );
 	}
 
+	public function test_share_link_for_owners_of_shared_lists() {
+		$user = self::factory()->user->create();
+		wp_set_current_user( $user );
+		$list = Lists::get( Lists::create( array( 'owner' => $user, 'is_default' => 1 ) ) );
+		$this->assertStringNotContainsString( 'data-wishcraft-share-url', Page::render( array() ) );
+		Lists::update( $list['id'], array( 'privacy' => 'link' ) );
+		$this->assertStringContainsString( 'wishlist=' . $list['share_token'], Page::render( array() ) );
+		Settings::save( array( 'sharing' => false ) );
+		$this->assertStringNotContainsString( 'data-wishcraft-share-url', Page::render( array() ) );
+	}
+
 	public function test_page_does_not_show_someone_elses_list() {
 		$owner = self::factory()->user->create();
 		$list  = Lists::create( array( 'owner' => $owner, 'title' => 'Secret' ) );

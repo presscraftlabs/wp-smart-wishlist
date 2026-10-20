@@ -162,6 +162,22 @@ export default function initPage() {
 					)
 				);
 			}
+		} else if ( action === 'copy-link' ) {
+			const input = control.parentNode.querySelector(
+				'[data-wishcraft-share-url]'
+			);
+			const done = () => toast( control.dataset.copied );
+			if ( window.navigator.clipboard ) {
+				window.navigator.clipboard
+					.writeText( input.value )
+					.then( done, () => {
+						input.select();
+					} );
+			} else {
+				input.select();
+				document.execCommand( 'copy' );
+				done();
+			}
 		} else if ( action === 'close' ) {
 			control.closest( 'dialog' ).close();
 		}

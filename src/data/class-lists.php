@@ -120,7 +120,7 @@ final class Lists {
 	public static function get( $id ) {
 		global $wpdb;
 		$table = Schema::table( 'lists' );
-		return self::row( $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id ) ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		return self::row( $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id ) ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 	}
 
 	/**
@@ -135,7 +135,7 @@ final class Lists {
 			return null;
 		}
 		$table    = Schema::table( 'lists' );
-		$wishlist = self::row( $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE share_token = %s", $token ) ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		$wishlist = self::row( $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE share_token = %s", $token ) ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 		return $wishlist && hash_equals( $wishlist['share_token'], $token ) ? $wishlist : null;
 	}
 
@@ -148,7 +148,7 @@ final class Lists {
 	public static function for_user( $user_id ) {
 		global $wpdb;
 		$table = Schema::table( 'lists' );
-		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE owner = %d ORDER BY is_default DESC, id ASC", $user_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE owner = %d ORDER BY is_default DESC, id ASC", $user_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 		return array_map( array( self::class, 'row' ), $rows );
 	}
 
@@ -164,7 +164,7 @@ final class Lists {
 			return array();
 		}
 		$table = Schema::table( 'lists' );
-		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE owner = 0 AND guest_key = %s ORDER BY is_default DESC, id ASC", $guest_key ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE owner = 0 AND guest_key = %s ORDER BY is_default DESC, id ASC", $guest_key ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 		return array_map( array( self::class, 'row' ), $rows );
 	}
 
@@ -250,6 +250,6 @@ final class Lists {
 		global $wpdb;
 		$table  = Schema::table( 'lists' );
 		$before = gmdate( 'Y-m-d H:i:s', time() - DAY_IN_SECONDS * (int) $days );
-		return array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT id FROM {$table} WHERE owner = 0 AND updated < %s LIMIT %d", $before, $limit ) ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		return array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT id FROM {$table} WHERE owner = 0 AND updated < %s LIMIT %d", $before, $limit ) ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 	}
 }

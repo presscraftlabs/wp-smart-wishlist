@@ -52,6 +52,7 @@ final class Plugin {
 		add_action( 'wishcraft_item_added', array( Wishlists::class, 'reset' ), 10, 0 );
 		add_action( 'wishcraft_item_removed', array( Wishlists::class, 'reset' ), 10, 0 );
 		add_filter( 'display_post_states', array( self::class, 'post_state' ), 10, 2 );
+		add_action( 'admin_init', array( self::class, 'privacy_policy' ) );
 	}
 
 	/**
@@ -103,6 +104,23 @@ final class Plugin {
 			return (int) $page;
 		}
 		return 0;
+	}
+
+	/**
+	 * Suggested text for the site's privacy policy.
+	 */
+	public static function privacy_policy() {
+		if ( ! function_exists( 'wp_add_privacy_policy_content' ) ) {
+			return;
+		}
+		$text = '<p>' . __( 'When you save items to a wishlist, we store the list, its items, quantities and notes. If you are logged in, the list belongs to your account.', 'wp-smart-wishlist' ) . '</p>'
+			. '<p>' . sprintf(
+				/* translators: %s: number of days. */
+				__( 'If you are not logged in, we set a cookie named wishcraft_guest with a random code so we can show you your wishlist again. It expires after %s days and is not used for tracking. Your guest wishlist moves into your account when you log in or register, and unused guest wishlists are deleted after the same number of days.', 'wp-smart-wishlist' ),
+				(int) Settings::get( 'guest_days' )
+			) . '</p>'
+			. '<p>' . __( 'If you share a list by link or make it public, anyone with the link can see its title, description, items, quantities, notes and your display name.', 'wp-smart-wishlist' ) . '</p>';
+		wp_add_privacy_policy_content( 'WishCraft', wp_kses_post( wpautop( $text, false ) ) );
 	}
 
 	/**

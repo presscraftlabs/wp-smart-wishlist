@@ -291,11 +291,11 @@
 }
 
 .wishcraft-item {
-	align-items: center;
+	align-items: start;
 	border-bottom: 1px solid var(--wishcraft-border);
 	display: grid;
-	gap: 1em;
-	grid-template-columns: 80px minmax(0, 1fr) auto;
+	gap: 0.75em 1em;
+	grid-template-columns: 80px minmax(0, 1fr);
 	padding: 1em 0;
 
 	&[aria-busy="true"] {
@@ -352,6 +352,7 @@
 	box-sizing: border-box;
 	font: inherit;
 	font-size: 0.9em;
+	margin-left: calc(-0.4em - 1px);
 	max-width: 24em;
 	min-width: 0;
 	padding: 0.2em 0.4em;
@@ -372,7 +373,8 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.75em;
-	justify-content: flex-end;
+	grid-column: 2;
+	justify-content: flex-start;
 
 	.wishcraft-button-wrap {
 		margin: 0;
@@ -387,8 +389,8 @@
 	input[type="number"] {
 		box-sizing: border-box;
 		font: inherit;
-		max-width: 5em;
 		padding: 0.3em 0.4em;
+		width: 5em;
 	}
 }
 
@@ -400,6 +402,7 @@
 .wishcraft-item__remove {
 	color: var(--wishcraft-muted);
 	display: inline-flex;
+	margin-left: auto;
 
 	&:hover,
 	&:focus {
@@ -410,13 +413,11 @@
 @media (max-width: 600px) {
 
 	.wishcraft-item {
-		align-items: start;
 		grid-template-columns: 64px minmax(0, 1fr);
 	}
 
 	.wishcraft-item__actions {
 		grid-column: 1 / -1;
-		justify-content: flex-start;
 	}
 }
 
@@ -433,6 +434,38 @@
 	p {
 		margin: 0.5em 0 0;
 	}
+}
+
+/* Share link */
+
+.wishcraft-share {
+	background: rgba(0, 0, 0, 0.03);
+	border-radius: var(--wishcraft-radius);
+	display: grid;
+	gap: 0.4em;
+	padding: 0.75em 1em;
+
+	label {
+		font-weight: 600;
+	}
+}
+
+.wishcraft-share__row {
+	display: flex;
+	gap: 0.5em;
+
+	input {
+		box-sizing: border-box;
+		flex: 1;
+		font: inherit;
+		min-width: 0;
+	}
+}
+
+.wishcraft-share__help {
+	color: var(--wishcraft-muted);
+	font-size: 0.9em;
+	margin: 0;
 }
 
 /* Dialog */

@@ -1,6 +1,6 @@
 {
   "name": "wp-smart-wishlist",
-  "version": "3.0.0-dev",
+  "version": "3.0.0",
   "private": true,
   "description": "WishCraft – multiple and shareable wishlists (front-end and block editor scripts).",
   "license": "GPL-2.0-or-later",

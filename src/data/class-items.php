@@ -93,7 +93,7 @@ final class Items {
 			return 0;
 		}
 		$table = Schema::table( 'items' );
-		$next  = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COALESCE(MAX(position), 0) + 1 FROM {$table} WHERE list_id = %d", $list_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		$next  = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COALESCE(MAX(position), 0) + 1 FROM {$table} WHERE list_id = %d", $list_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 		$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$table,
 			array(
@@ -129,7 +129,7 @@ final class Items {
 	public static function get( $id ) {
 		global $wpdb;
 		$table = Schema::table( 'items' );
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 		return $row ? self::row( $row ) : null;
 	}
 
@@ -144,7 +144,7 @@ final class Items {
 	public static function find( $list_id, $object_id, $variation_id = 0 ) {
 		global $wpdb;
 		$table = Schema::table( 'items' );
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE list_id = %d AND object_id = %d AND variation_id = %d", $list_id, $object_id, $variation_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE list_id = %d AND object_id = %d AND variation_id = %d", $list_id, $object_id, $variation_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 		return $row ? self::row( $row ) : null;
 	}
 
@@ -157,7 +157,7 @@ final class Items {
 	public static function for_list( $list_id ) {
 		global $wpdb;
 		$table = Schema::table( 'items' );
-		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE list_id = %d ORDER BY position ASC, id ASC", $list_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE list_id = %d ORDER BY position ASC, id ASC", $list_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 		return array_map( array( self::class, 'row' ), $rows );
 	}
 
@@ -170,7 +170,7 @@ final class Items {
 	public static function count( $list_id ) {
 		global $wpdb;
 		$table = Schema::table( 'items' );
-		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE list_id = %d", $list_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE list_id = %d", $list_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 	}
 
 	/**
@@ -190,7 +190,7 @@ final class Items {
 		$table = Schema::table( 'items' );
 		$lists = implode( ',', $list_ids );
 		$posts = implode( ',', array_slice( $object_ids, 0, 500 ) );
-		$rows  = $wpdb->get_results( "SELECT object_id, list_id FROM {$table} WHERE list_id IN ({$lists}) AND object_id IN ({$posts})" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- integers only, plugin table.
+		$rows  = $wpdb->get_results( "SELECT object_id, list_id FROM {$table} WHERE list_id IN ({$lists}) AND object_id IN ({$posts})" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- integers only, plugin table.
 		$out   = array();
 		foreach ( $rows as $row ) {
 			$out[ (int) $row->object_id ][] = (int) $row->list_id;
@@ -275,7 +275,7 @@ final class Items {
 	public static function popular( $limit = 20 ) {
 		global $wpdb;
 		$table = Schema::table( 'items' );
-		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT object_id, COUNT(DISTINCT list_id) AS lists FROM {$table} GROUP BY object_id ORDER BY lists DESC LIMIT %d", $limit ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT object_id, COUNT(DISTINCT list_id) AS lists FROM {$table} GROUP BY object_id ORDER BY lists DESC LIMIT %d", $limit ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 		return array_map(
 			static function ( $row ) {
 				return array(

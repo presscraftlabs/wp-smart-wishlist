@@ -3,7 +3,7 @@
  * Plugin Name:       WishCraft – Multiple & Shareable Wishlists
  * Plugin URI:        https://wordpress.org/plugins/wp-smart-wishlist/
  * Description:       Wishlists for WooCommerce and any post type: several named lists, guest wishlists, share links, gift lists and collaborators.
- * Version:           3.0.0-dev
+ * Version:           3.0.0
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Rajan V
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'WISHCRAFT_VERSION', '3.0.0-dev' );
+define( 'WISHCRAFT_VERSION', '3.0.0' );
 define( 'WISHCRAFT_FILE', __FILE__ );
 define( 'WISHCRAFT_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WISHCRAFT_URL', plugin_dir_url( __FILE__ ) );

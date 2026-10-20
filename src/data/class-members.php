@@ -60,7 +60,7 @@ final class Members {
 		}
 		$key      = bin2hex( random_bytes( 32 ) );
 		$table    = Schema::table( 'members' );
-		$existing = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$table} WHERE list_id = %d AND email = %s", $list_id, $email ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		$existing = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$table} WHERE list_id = %d AND email = %s", $list_id, $email ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 		$data     = array(
 			'invite_key' => self::hash( $key ),
 			'invited'    => current_time( 'mysql', true ),
@@ -100,7 +100,7 @@ final class Members {
 		}
 		$table = Schema::table( 'members' );
 		$hash  = self::hash( $key );
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE invite_key = %s AND status = 'invited'", $hash ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE invite_key = %s AND status = 'invited'", $hash ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 		if ( ! $row || ! hash_equals( $row->invite_key, $hash ) ) {
 			return null;
 		}
@@ -135,7 +135,7 @@ final class Members {
 	public static function get( $id ) {
 		global $wpdb;
 		$table = Schema::table( 'members' );
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 		return $row ? self::row( $row ) : null;
 	}
 
@@ -152,7 +152,7 @@ final class Members {
 			return null;
 		}
 		$table = Schema::table( 'members' );
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE list_id = %d AND user_id = %d AND status = 'active'", $list_id, $user_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE list_id = %d AND user_id = %d AND status = 'active'", $list_id, $user_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 		return $row ? self::row( $row ) : null;
 	}
 
@@ -165,7 +165,7 @@ final class Members {
 	public static function for_list( $list_id ) {
 		global $wpdb;
 		$table = Schema::table( 'members' );
-		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE list_id = %d ORDER BY id ASC", $list_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE list_id = %d ORDER BY id ASC", $list_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 		return array_map( array( self::class, 'row' ), $rows );
 	}
 
@@ -181,7 +181,7 @@ final class Members {
 			return array();
 		}
 		$table = Schema::table( 'members' );
-		return array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT list_id FROM {$table} WHERE user_id = %d AND status = 'active' ORDER BY list_id ASC", $user_id ) ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- plugin table.
+		return array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT list_id FROM {$table} WHERE user_id = %d AND status = 'active' ORDER BY list_id ASC", $user_id ) ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- plugin table.
 	}
 
 	/**

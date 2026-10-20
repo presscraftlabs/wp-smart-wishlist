@@ -206,7 +206,7 @@ final class Page {
 		 * @param string $html     HTML.
 		 * @param array  $wishlist List.
 		 */
-		$html .= apply_filters( 'wishcraft_list_panel', '', $wishlist );
+		$html .= apply_filters( 'wishcraft_list_panel', self::share_panel( $wishlist ), $wishlist );
 
 		if ( ! $items ) {
 			$html .= self::empty_state( __( 'Nothing saved in this list yet.', 'wp-smart-wishlist' ) );
@@ -407,6 +407,28 @@ final class Page {
 			empty( $args['show_label'] ) ? '' : '<span class="wishcraft-counter__label">' . esc_html__( 'Wishlist', 'wp-smart-wishlist' ) . '</span>',
 			$count,
 			esc_html__( 'saved items', 'wp-smart-wishlist' )
+		);
+	}
+
+	/**
+	 * The share link of a shared or public list, for its owner.
+	 *
+	 * @param array $wishlist List.
+	 * @return string
+	 */
+	private static function share_panel( array $wishlist ) {
+		if ( ! Settings::get( 'sharing' ) || 'private' === $wishlist['privacy'] || ! Access::can_manage( $wishlist ) ) {
+			return '';
+		}
+		$url = Controller::share_url( $wishlist );
+		return sprintf(
+			'<div class="wishcraft-share"><label for="wishcraft-share-%1$d">%2$s</label><div class="wishcraft-share__row"><input id="wishcraft-share-%1$d" type="text" readonly value="%3$s" data-wishcraft-share-url /><button type="button" class="wishcraft-secondary" data-wishcraft-action="copy-link" data-copied="%4$s" hidden>%5$s</button></div><p class="wishcraft-share__help">%6$s</p></div>',
+			(int) $wishlist['id'],
+			esc_html__( 'Share link', 'wp-smart-wishlist' ),
+			esc_url( $url ),
+			esc_attr__( 'Link copied.', 'wp-smart-wishlist' ),
+			esc_html__( 'Copy link', 'wp-smart-wishlist' ),
+			'public' === $wishlist['privacy'] ? esc_html__( 'This list is public: anyone with the link can see it.', 'wp-smart-wishlist' ) : esc_html__( 'Anyone with this link can see the list and buy from it. Make the list private to turn the link off.', 'wp-smart-wishlist' )
 		);
 	}
 
